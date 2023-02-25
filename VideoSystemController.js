@@ -42,7 +42,7 @@ class VideoSystemController {
         let prod7 = new Movie("Tadeo Jones", "Español", "09/11/2012", "Las Aventuras de Tadeo para ayudar a un amigo", "a", new Resource(123, "lod"), new Coordinate(48, 70));
         let prod8 = new Serie("Friends", "EEUU", "20/03/1996", "La vida de un grupo de amigos en Nueva York", "a", new Resource(40, "lod"), new Coordinate(34, 33), 10);
 
-        let prod9 = new Serie("Castle", "EEUU", "14/07/2008", "Las aventuras de un escritor en el cuerpo de policia", "a", new Resource(40, "lod"), new Coordinate(34, 33), new Coordinate(34, 33),8);
+        let prod9 = new Serie("Castle", "EEUU", "14/07/2008", "Las aventuras de un escritor en el cuerpo de policia", "a", new Resource(40, "lod"), new Coordinate(34, 33), new Coordinate(34, 33), 8);
         let prod10 = new Movie("The Iron Giant", "EEUU", "22/11/2005", "Un gigante de hierro cae en la tierra y un niño lo oculta", "a", new Resource(90, "lod"), new Coordinate(34, 33));
         let prod11 = new Movie("Rocky", "EEUU", "20/03/1992", "El esfuerzo de Rocky por superarse", "a", new Resource(125, "lod"), new Coordinate(34, 33));
         let prod12 = new Serie("Candice Renoir", "Francia", "17/09/2018", "Los casos de una inspectora de policia", "a", new Resource(123, "lod"), new Coordinate(20, 70), 7);
@@ -154,7 +154,21 @@ class VideoSystemController {
 
         //console.log(Videosystem.toString());
     }
-
+    
+    const historyActions = {
+        init: () => {
+            Videosystem.handleInit();
+        }
+        //showShoppingCart: () => VideoSystemApp.handleShowShoppingCart(),
+        productsCategoryList: (event) => VideoSystemApp.handleProductsCategoryList(event.state.category),
+        productsTypeList: (event) => VideoSystemApp.handleProductsTypeList(event.state.type),
+        showProduct: (event) => VideoSystemApp.handleShowProduct(event.state.serial)
+    } 
+        window.addEventListener('popstate', function(event) {
+        if (event.state) {
+            historyActions[event.state.action](event);
+        }
+    });
     constructor(model, view) {
         this.#Videosystem = model;
         this.#VideoSystemView = view;
@@ -164,32 +178,34 @@ class VideoSystemController {
         // this.#VideoSystemView.bindInit(this.handleInit.bind(this));
         this.#VideoSystemView.bindInit(this.handleInit)
         this.#VideoSystemView.bindProductsTypeList(this.handleProductionsTypeList);
-        }
+    }
     onLoad = () => {
         this.#loadVideoSystemObjects();
         /*  for (let category of this.#Videosystem.categories) {
               console.log(category[0].Name);
           } */
 
-          this.#VideoSystemView.bindProductsCategoryList(
+        this.#VideoSystemView.bindProductsCategoryList(
             this.handleProductionsCategoryList
         );
         this.#VideoSystemView.bindProductsList(
             this.handleAletProductionList
         );
+
         this.onAddCategory();
-        this.onAddActor();
 
     }
     onInit = () => {
-       // this.#VideoSystemView.ListCategories();
-       console.log(this.#Videosystem.categories);
-       this.#VideoSystemView.showCategories(this.#Videosystem.categories);
-       this.#VideoSystemView.showAletProductions(this.#Videosystem.productions);
+        // this.#VideoSystemView.ListCategories();
+        console.log(this.#Videosystem.categories);
+        this.#VideoSystemView.showCategories(this.#Videosystem.categories);
+        this.#VideoSystemView.showAletProductions(this.#Videosystem.productions);
         this.#VideoSystemView.bindProductsCategoryList(
             this.handleProductionsCategoryList
         );
-        
+        this.#VideoSystemView.bindProducts(
+            this.handleProduction
+        );
     }
 
     handleInit = () => {
@@ -201,10 +217,16 @@ class VideoSystemController {
             console.log(category[0].Description);
         }
         this.#VideoSystemView.showCategoriesInMenu(this.#Videosystem.categories);
-        this.#VideoSystemView.showActorsInMenu(this.#Videosystem.actors);
-        this.#VideoSystemView.showDirectorsInMenu(this.#Videosystem.directors);
+        this.#VideoSystemView.showActorsInMenu();
+        this.#VideoSystemView.showDirectorsInMenu();
         this.#VideoSystemView.bindProductsCategoryListInMenu(
             this.handleProductionsCategoryList
+        );
+        this.#VideoSystemView.bindProducts(
+            this.handleProduction
+        );
+        this.#VideoSystemView.bindActors(
+            this.handleActor
         );
         this.#VideoSystemView.bindActorListInMenu(
             this.handleActorList
@@ -212,25 +234,17 @@ class VideoSystemController {
         this.#VideoSystemView.bindDirectorListInMenu(
             this.handleDirectorList
         );
-    }
-    onAddActor = () => {
-        for (let actor of (this.#Videosystem.actors)) {
-            console.log(actor[0].Name);
-        }
 
-        /* this.#VideoSystemView.bindActorListInMenu(
-            this.handleActorList
-        ); */
-        console.log(this.#VideoSystemView.bindActorListInMenu());
     }
+
     handleProductsTypeList = (type) => {
-		if (VideoSystem[type]){
-			this.#VideoSystemView.listProducts(this.#Videosystem.getTypeProducts(VideoSystem[type]), type);
-			this.#VideoSystemView.bindShowProduct(this.handleShowProduct);
-		} else {
-			throw new Error (`${type} isn't a type of Product.`)
-		}
-	}
+        if (VideoSystem[type]) {
+            this.#VideoSystemView.listProducts(this.#Videosystem.getTypeProducts(VideoSystem[type]), type);
+            this.#VideoSystemView.bindShowProduct(this.handleShowProduct);
+        } else {
+            throw new Error(`${type} isn't a type of Product.`)
+        }
+    }
     handleProductionsCategoryList = (title) => {
         let category2;
         console.log(title);
@@ -244,46 +258,152 @@ class VideoSystemController {
 
 
         this.#VideoSystemView.listProductions(this.#Videosystem.getProductionsCategory(category2), title, this.#Videosystem);
+        this.#VideoSystemView.bindProducts(
+            this.handleProduction
+        );
     }
-    handleActorList = (title) => {
-        let category2;
-        let nom;
-        console.log(title.text);
-        for (let acto of this.#Videosystem.actors) {
-            nom = acto[0].Name + " " + acto[0].Lastname1;
-            console.log(nom);
-            console.log(acto[0]);
-            //console.log(title.innerHTML.normalize("NFD").replace(/[\u0300-\u036f]/g, ''));
-            if (nom == title.innerHTML.normalize("NFD").replace(/[\u0300-\u036f]/g, '')) {
-                category2 = acto[0];
+    handleProduction = (title) => {
+        let produccion;
+        //console.log($(title).parent().last().get(0));
+        //console.log($(title).parent().children().children().children().children().children().text());
+        let ref=$(title).parent().last().children().text().trim();
+        for (let prod of this.#Videosystem.productions) {
+            //console.log(prod.Title);
+           // console.log(ref);
+            if (prod.Title == ref) {
+                produccion = prod;
             }
         }
-        console.log(category2);
-        this.#VideoSystemView.listActor(category2, this.#Videosystem);
+        //console.log(produccion);
+        //console.log("entra en el handleproduction")
+        this.#VideoSystemView.listProduction(produccion, this.#Videosystem);
+        this.#VideoSystemView.bindActorsProd(
+            this.handleActorProd
+        );
+    }
+    
+    handleActor = (title) => {
+        let actor2;
+        let act;
+        console.log(title);
+        console.log($(title).text());
+        //console.log($(title).parent().children().children().children().children().children().text());
+        let ref=$(title).text();
+        for (let actor of this.#Videosystem.actors) {
+            act=actor[0].Name +" "+actor[0].Lastname1+" "+ actor[0].Lastname2;
+
+            console.log(act);
+            console.log(ref);
+            if (act == ref) {
+                actor2 = actor[0];
+            }
+        }
+        console.log(actor2);
+       // console.log("entra en el handle actor")
+        this.#VideoSystemView.listActor(actor2, this.#Videosystem);
+        this.#VideoSystemView.bindProductsPerson(
+            this.handleProductionPerson
+        );
+    }
+    handleDirector = (title) => {
+        let dir2;
+        let dir;
+        console.log(title);
+        console.log($(title).text());
+        //console.log($(title).parent().children().children().children().children().children().text());
+        let ref=$(title).text();
+        for (let direc of this.#Videosystem.directors) {
+            dir=direc[0].Name +" "+direc[0].Lastname1+" "+ direc[0].Lastname2;
+
+            console.log(dir);
+            console.log(ref);
+            if (dir == ref) {
+                dir2 = direc[0];
+            }
+        }
+        console.log(dir2);
+       // console.log("entra en el handle actor")
+        this.#VideoSystemView.listDirector(dir2, this.#Videosystem);
+        this.#VideoSystemView.bindProductsPerson(
+            this.handleProductionPerson
+        );
+    }
+    handleActorProd = (title) => {
+        let actor2;
+        let act;
+        console.log(title);
+        console.log($(title).text());
+        //console.log($(title).parent().children().children().children().children().children().text());
+        let ref=$(title).text();
+        for (let actor of this.#Videosystem.actors) {
+            act=actor[0].Name +" "+actor[0].Lastname1+" "+ actor[0].Lastname2;
+
+            console.log(act);
+            console.log(ref);
+            if (act == ref) {
+                actor2 = actor[0];
+            }
+        }
+        console.log(actor2);
+       // console.log("entra en el handle actor")
+        this.#VideoSystemView.listActor(actor2, this.#Videosystem);
+        this.#VideoSystemView.bindProductsPerson(
+            this.handleProductionPerson
+        );
+    }
+    handleProductionPerson = (title) => {
+        let actor2;
+        let act;
+        console.log(title);
+        console.log($(title).text());
+        //console.log($(title).parent().children().children().children().children().children().text());
+        let ref=$(title).text();
+        for (let prod of this.#Videosystem.productions) {
+
+            console.log(prod.Title);
+            console.log(ref);
+            if (prod.Title == ref) {
+                actor2 = prod;
+            }
+        }
+        console.log(actor2);
+       // console.log("entra en el handle actor")
+        this.#VideoSystemView.listProduction(actor2, this.#Videosystem);
+        this.#VideoSystemView.bindActorsProd(
+            this.handleActorProd
+        );
+    }
+    handleActorList = () => {
+
+        this.#VideoSystemView.listActors(this.#Videosystem.actors, this.#Videosystem);
+        this.#VideoSystemView.bindActors(
+            this.handleActor
+        );
     }
     handleAletProductionList = (title) => {
-        let category2;
-        let nom;
         console.log(title.text);
-        
+
         console.log(this.#Videosystem.productions);
         this.#VideoSystemView.showAletProductions(this.#Videosystem.productions);
     }
-   handleDirectorList = (title) => {
-        let category2;
-        let nom;
-        console.log(title.text);
-        for (let dire of this.#Videosystem.directors) {
-            nom = dire[0].Name + " " + dire[0].Lastname1;
-            console.log(nom);
-            console.log(dire[0]);
-            //console.log(title.innerHTML.normalize("NFD").replace(/[\u0300-\u036f]/g, ''));
-            if (nom == title.innerHTML.normalize("NFD").replace(/[\u0300-\u036f]/g, '')) {
-                category2 = dire[0];
-            }
-        }
-        console.log(category2);
-        this.#VideoSystemView.listDirector(category2, this.#Videosystem);
+    handleDirectorList = () => {
+        /*         let category2;
+                let nom;
+                console.log(title.text);
+                for (let dire of this.#Videosystem.directors) {
+                    nom = dire[0].Name + " " + dire[0].Lastname1;
+                    console.log(nom);
+                    console.log(dire[0]);
+                    //console.log(title.innerHTML.normalize("NFD").replace(/[\u0300-\u036f]/g, ''));
+                    if (nom == title.innerHTML.normalize("NFD").replace(/[\u0300-\u036f]/g, '')) {
+                        category2 = dire[0];
+                    }
+                }
+                console.log(category2); */
+        this.#VideoSystemView.showDirectors(this.#Videosystem.directors, this.#Videosystem);
+        this.#VideoSystemView.bindDirectors(
+            this.handleDirector
+        );
     }
     handleProductionsTypeList = (type) => {
         console.log("Handle");
@@ -297,9 +417,9 @@ class VideoSystemController {
         }
         console.log(category2);
         console.log(VideoSystem[type]);
-            this.#VideoSystemView.listProductions(this.#Videosystem.getProductionsCategory(category2), type, this.#Videosystem);
-            this.#VideoSystemView.bindShowProduct(this.handleShowProduct);
-     
+        this.#VideoSystemView.listProductions(this.#Videosystem.getProductionsCategory(category2), type, this.#Videosystem);
+        this.#VideoSystemView.bindShowProduct(this.handleShowProduct);
+
     }
 }
 export default VideoSystemController;
