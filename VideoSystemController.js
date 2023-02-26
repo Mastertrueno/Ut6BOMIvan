@@ -155,20 +155,6 @@ class VideoSystemController {
         //console.log(Videosystem.toString());
     }
     
-    const historyActions = {
-        init: () => {
-            Videosystem.handleInit();
-        }
-        //showShoppingCart: () => VideoSystemApp.handleShowShoppingCart(),
-        productsCategoryList: (event) => VideoSystemApp.handleProductsCategoryList(event.state.category),
-        productsTypeList: (event) => VideoSystemApp.handleProductsTypeList(event.state.type),
-        showProduct: (event) => VideoSystemApp.handleShowProduct(event.state.serial)
-    } 
-        window.addEventListener('popstate', function(event) {
-        if (event.state) {
-            historyActions[event.state.action](event);
-        }
-    });
     constructor(model, view) {
         this.#Videosystem = model;
         this.#VideoSystemView = view;
