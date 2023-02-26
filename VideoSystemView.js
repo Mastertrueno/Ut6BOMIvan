@@ -249,6 +249,7 @@ class VideoSystemgerView {
 		}
 
 		//product = production.next();
+		container.children().children().children().last().append(`<h4><a class="windown nav-link" href="#" role="button"  aria-haspopup="true" aria-expanded="false">Abrir en ventana</a></h4>`);
 
 		container.prepend(`<h1>${product.Title}</h1>`);
 		this.main.append(container);
@@ -314,7 +315,7 @@ class VideoSystemgerView {
 		}
 
 		//product = production.next();
-
+		container.children().children().children().last().append(`<h4><a class="windown nav-link" href="#" role="button"  aria-haspopup="true" aria-expanded="false">Abrir en ventana</a></h4>`);
 		container.prepend(`<h1>${actor.Name} ${actor.Lastname1} ${actor.Lastname2}</h1>`);
 		this.main.append(container);
 	}
@@ -352,6 +353,7 @@ class VideoSystemgerView {
 		//product = production.next();
 
 		container.prepend(`<h1>${director.Name} ${director.Lastname1} ${director.Lastname2}</h1>`);
+		container.children().children().children().last().append(`<h4><a class="windown nav-link" href="#" role="button"  aria-haspopup="true" aria-expanded="false">Abrir en ventana</a></h4>`);
 		this.main.append(container);
 	}
 	showDirectors(directors, Videosystem) {
@@ -458,6 +460,29 @@ class VideoSystemgerView {
 				{ action: 'actorlist' },
 				'#actor-list', event
 			);
+		});
+		//console.log(this.#excecuteHandler);
+	}
+	bindWindows(handler) {
+		console.log(handler);
+		console.log($('windown'));
+		$('a').click((event) => {
+			console.log($(event.target));
+			let win = $(event.target).closest($('a')).get(0);
+			console.log(win);
+			this.#excecuteHandler(
+				handler, [win],
+				'#window-list',
+				{ action: 'windown' },
+				'#window-list', event
+			);
+			window.mywindow = null;
+        
+                    if (!mywindow || mywindow.closed) {
+                        mywindow = window.open("auxPage.html", "Mywindow", "width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no");
+                    } else {
+                        mywindow.focus();
+                    }
 		});
 		//console.log(this.#excecuteHandler);
 	}
