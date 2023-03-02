@@ -7,39 +7,19 @@ class VideoSystemgerView {
 	}
 	#excecuteHandler(handler, handlerArguments, scrollElement, data, url, event) {
 		handler(...handlerArguments);
-		/* $(scrollElement).get(0).scrollIntoView();
+		//$(scrollElement).get(0).scrollIntoView();
 		history.pushState(data, null, url);
-		event.preventDefault(); */
+		event.preventDefault();
 	}
-	/* ListCategories() {
-		this.categories.empty();
-		this.categories.append(`<div id="type-list" class="row">
-			   <div class="col-lg-3 col-md-6"><a data-type="Accion" href="#product-list">
-					   <div class="cat-list-image"><img alt="Categoría Accion" src="images/accion.jfif" />
-					   </div>
-					   <div class="cat-list-text">
-						   <h3>Accion</h3>
-					   </div>
-				   </a>
-			   </div>
-			   <div class="col-lg-3 col-md-6"><a data-type="Romance" href="#product-list">
-					   <div class="cat-list-image"><img alt="Categoría Romance" src="images/romance.jfif" />
-					   </div>
-					   <div class="cat-list-text">
-						   <h3>Romance</h3>
-					   </div>
-				   </a>
-			   </div>
-			   <div class="col-lg-3 col-md-6"><a data-type="Misterio" href="#product-list">
-					   <div class="cat-list-image"><img alt="Categoría Misterio" src="images/misterio.jfif" />
-					   </div>
-					   <div class="cat-list-text">
-						   <h3>Misterio</h3>
-					   </div>
-				   </a>
-			   </div>
-		   </div>`);
-	} */
+	bindInit(handler) {
+		$('#init').click((event) => {
+			this.#excecuteHandler(handler, [], 'body', { action: 'init' }, '#', event);
+		});
+		$('#logo').click((event) => {
+			this.#excecuteHandler(handler, [], 'body', { action: 'init' }, '#', event);
+		});
+	}
+
 	showCategories(categories) {
 		console.log(categories);
 		if (this.categories.children().length > 1)
@@ -52,7 +32,7 @@ class VideoSystemgerView {
 					</div>
 					<div class="cat-list-text">
 						<h3>${category[0].Name}</h3>
-						<div>${category[0].Description}</div>
+						
 					</div>
 				</a>
 			</div>`);
@@ -225,10 +205,10 @@ class VideoSystemgerView {
 		//console.log(product);
 
 		let div = $(`<div class="col-md-4">
-				<figure class="card card-product-grid card-lg"> <a data-product="${product.Title}" href="#single-product" class="img-wrap"><img class="${product.constructor.name}-style" src="images/${product.Title}.jfif"></a>
+				<figure class="card card-product-grid card-lg"> <img class="${product.name}-style" src="images/${product.Title}.jfif">
 					<figcaption class="info-wrap">
 						<div class="row">
-							<div class="col-md-8"> <a data-data-product="${product.Title}" href="#single-product" class="title"><h2>${product.Title}</h2></a> </div>
+							<div class="col-md-8"> <h2>${product.Title}</h2></div>
 						</div>
 						<div class="col-md-8"><h3>Nacionalidad</h3><span class="product h4">${product.Nacionality}</span></a>  </div>
 						<div class="col-md-8"><h3>Publicacion</h3></a><span class="product h4">${product.Publication}</span> <br> </div>
@@ -245,7 +225,7 @@ class VideoSystemgerView {
 		for (let actor of Videosystem.getCast(product)) {
 			/* console.log(actor);
 			console.log(actor.Name); */
-			container.children().children().children().last().append(`<div class="actor-wrap"> <a href="#${actor.Name}${actor.Lastname1}" class="actor h5">${actor.Name} ${actor.Lastname1} ${actor.Lastname2}</a> <br> </div>`);
+			container.children().children().children().last().append(`<div class="actor-wrap"> <h5><a href="#${actor.Name}${actor.Lastname1}" class="actor h5">${actor.Name} ${actor.Lastname1} ${actor.Lastname2}</a></h5>  </div>`);
 		}
 
 		//product = production.next();
@@ -436,6 +416,7 @@ class VideoSystemgerView {
 	bindProducts(handler) {
 		console.log(handler);
 		console.log($('#product-list'));
+		console.log($('#product-list').find('a'));
 		$('#product-list').find('a').click((event) => {
 			let prod = $(event.target).closest($('a')).get(0);
 			console.log(prod);
@@ -465,8 +446,8 @@ class VideoSystemgerView {
 	}
 	bindWindows(handler) {
 		console.log(handler);
-		console.log($('windown'));
-		$('a').click((event) => {
+		console.log($('h4').find("a"));
+		$('h4').find('a').click((event) => {
 			console.log($(event.target));
 			let win = $(event.target).closest($('a')).get(0);
 			console.log(win);
@@ -477,12 +458,12 @@ class VideoSystemgerView {
 				'#window-list', event
 			);
 			window.mywindow = null;
-        
-                    if (!mywindow || mywindow.closed) {
-                        mywindow = window.open("auxPage.html", "Mywindow", "width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no");
-                    } else {
-                        mywindow.focus();
-                    }
+
+			if (!mywindow || mywindow.closed) {
+				mywindow = window.open("auxPage.html", "Mywindow", "width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no");
+			} else {
+				mywindow.focus();
+			}
 		});
 		//console.log(this.#excecuteHandler);
 	}
@@ -520,8 +501,8 @@ class VideoSystemgerView {
 	}
 	bindProductsPerson(handler) {
 		console.log(handler);
-		console.log($('div'));
-		$('div').find('a').click((event) => {
+		console.log($('h5'));
+		$('h5').find('a').click((event) => {
 			console.log($(event.target));
 			let act = $(event.target).closest($('a')).get(0);
 			console.log(act);
@@ -622,6 +603,84 @@ class VideoSystemgerView {
 				'#type-list', event
 			);
 		});
+	}
+	showProductInNewWindow(product, message) {
+		let main = $(this.productWindow.document).find('main');
+		let header = $(this.productWindow.document).find('header nav');
+		main.empty();
+		header.empty();
+		let container;
+		if (product) {
+			this.productWindow.document.title = `${product.Title}`;
+			header.append(`<h1 data-serial="${product.Title}" class="display-5">${product.Title}</h1>`);
+			container = $(`<div id="single-product" class="${product.Title}-style container mt-5 mb-5"> 
+			  <div class="row d-flex justify-content-center"> 
+			  	<div class="col-md-10">
+			  		<div class="card">
+			    		<div class="row"> 
+			 				<div class="col-md-12"> 
+			  					<div class="images p-3"> 
+			  						<div class="text-center p-4"> 
+										<img id="main-image" src="images/${product.Title}.jfif"/>
+			   						</div> 
+			   					</div> 
+			   				</div> 
+			   				<div class="col-md-12"> 
+			   					<div class="product p-4">
+									<div class="mt-4 mb-3"> 
+										<h5 class="text-uppercase">${product.Title}</h5> 
+									</div> 
+									<p class="about">${product.Description}</p>
+								</div> 
+							</div> 
+						</div> 
+					</div> 
+				</div>
+			</div> 
+				 </div> 
+				 <button class="btn btn-primary text-uppercase m-2 px-4" onClick="window.close()">Cerrar</button>`);
+			//container.find('h6').after(this.#instance[product.constructor.name]);
+		} else {
+			container = $(` <div class="container mt-5 mb-5"> <div class="row d-flex justify-content-center"> ${message} </div> </div>`);
+		}
+		main.append(container);
+		this.productWindow.document.body.scrollIntoView();
+	}
+
+	bindShowProductInNewWindow(handler) {
+		$('#b-open').click((event) => {
+			if (!this.productWindow || this.productWindow.closed) {
+				this.productWindow = window.open("product.html", "ProductWindow", "width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no");
+				this.productWindow.addEventListener('DOMContentLoaded', () => {
+					handler(event.target.dataset.serial)
+				});
+			} else {
+				if ($(this.productWindow.document).find('header nav h1').get(0).dataset.serial !== event.target.dataset.serial) {
+					handler(event.target.dataset.serial);
+				}
+				this.productWindow.focus();
+			}
+		});
+	}
+	buttonsHistory() {
+		// Botón atrás
+		let bGoBack = $('<button class="btn btn-primary m-1">go (-1)</button>');
+		bGoBack.click(function (event) {
+			window.history.go(-1);
+		});
+		bForward.after(bGoBack);
+		// Botón reload
+		let bGoReload = $('<button class="btn btn-primary m-1">go ()</button>');
+		bGoReload.click(function (event) {
+			window.history.go();
+		});
+		bGoBack.after(bGoReload);
+		// Botón reload
+		let bGoForward = $('<button class="btn btn-primary m-1">go (1)</button>');
+		bGoForward.click(function (event) {
+			window.history.go(1);
+		});
+		bGoReload.after(bGoForward);
 	}
 }
 export default VideoSystemgerView;
