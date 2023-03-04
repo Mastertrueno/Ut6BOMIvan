@@ -1,3 +1,4 @@
+import "./VideoSystemApp.js";
 const historyActions = {
     init: () => {
         VideoSystemApp.handleInit();
@@ -37,13 +38,14 @@ const historyActions = {
 }
 window.addEventListener('popstate', function (event) {
     if (event.state) {
+        console.log(event.state);
         historyActions[event.state.action](event);
     }
 });
 
 
 
-s/* howCategories(categories)
+/*showCategories(categories)
 showProductions(categories)
 showAletProductions(productions)
 showCategoriesInMenu(categories)
