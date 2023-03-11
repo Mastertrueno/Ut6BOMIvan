@@ -1,4 +1,4 @@
-import { VideoSystem, Category, Coordinate, Resource, User, Person, Movie, Serie } from "./VideoSystemModel.js";
+import { VideoSystem, Category, Coordinate, Resource, User, Person, Movie, Serie, Production } from "./VideoSystemModel.js";
 class VideoSystemController {
     //Campos privados
     #Videosystem;
@@ -226,7 +226,7 @@ class VideoSystemController {
     handleProductsTypeList = (type) => {
         if (VideoSystem[type]) {
             this.#VideoSystemView.listProducts(this.#Videosystem.getTypeProducts(VideoSystem[type]), type);
-            this.#VideoSystemView.bindShowProduct(this.handleShowProduct);
+            this.#VideoSystemView.bindShowProduct(this.handleShowProductInNewWindow);
         } else {
             throw new Error(`${type} isn't a type of Product.`)
         }
@@ -249,7 +249,7 @@ class VideoSystemController {
         );
         this.#VideoSystemView.bindShowProductInNewWindow(
             //this.handleWindow
-            this.handleShowProduct
+            this.handleShowProductInNewWindow
         );
     }
     handleProduction = (title) => {
@@ -273,7 +273,7 @@ class VideoSystemController {
         );
         this.#VideoSystemView.bindShowProductInNewWindow(
             //this.handleWindow
-            this.handleShowProduct
+            this.handleShowProductInNewWindow
         );
     }
 
@@ -335,7 +335,7 @@ class VideoSystemController {
 
                 this.#VideoSystemView.bindShowProductInNewWindow(
                     //this.handleWindow
-                    this.handleShowProduct
+                    this.handleShowProductInNewWindow
                 );
             }
         //}
@@ -406,7 +406,7 @@ class VideoSystemController {
                 );
                 this.#VideoSystemView.bindShowProductInNewWindow(
                     //this.handleWindow
-                    this.handleShowProduct
+                    this.handleShowProductInNewWindow
                 );
             }
        // }
@@ -437,13 +437,12 @@ class VideoSystemController {
                 this.handleDirectorList
             );
         } else { */
-            if (title != "Abrir en ventana") {
                 for (let actor of this.#Videosystem.actors) {
                     act = actor[0].Name.trim() + " " + actor[0].Lastname1.trim() + " " + actor[0].Lastname2.trim();
                     act = act.trim();
                     console.log(act);
                     console.log(title);
-                    if (act == title) {
+                    if (act == title.trim()) {
                         console.log("entro en el igual")
                         actor2 = actor[0];
                     }
@@ -466,13 +465,7 @@ class VideoSystemController {
                 this.#VideoSystemView.bindDirectorListInMenu(
                     this.handleDirectorList
                 );
-            } else {
-                console.log("Entro");
-                this.#VideoSystemView.bindShowProductInNewWindow(
-                    // this.handleWindow
-                    this.handleShowProduct
-                );
-            }
+
         //}
 
     }
@@ -548,7 +541,6 @@ class VideoSystemController {
                 this.handleAletProductionList
             );
         }  else {*/
-            if (title != "Abrir en ventana") {
                 for (let prod of this.#Videosystem.productions) {
 
                     console.log(prod.Title);
@@ -578,13 +570,7 @@ class VideoSystemController {
                 this.#VideoSystemView.bindProductsList(
                     this.handleAletProductionList
                 );
-            } else {
-                console.log("entro en production person");
-                this.#VideoSystemView.bindShowProductInNewWindow(
-                    //this.handleWindow
-                    this.handleShowProduct
-                );
-            }
+         
         
     }
     handleActorList = () => {
@@ -674,7 +660,7 @@ class VideoSystemController {
         console.log(category2);
         console.log(VideoSystem[type]);
         this.#VideoSystemView.listProductions(this.#Videosystem.getProductionsCategory(category2), type, this.#Videosystem);
-        this.#VideoSystemView.bindShowProductInNewWindow(this.handleShowProduct);
+        this.#VideoSystemView.bindShowProductInNewWindow(this.handleShowProductInNewWindow);
 
     }
 
@@ -689,15 +675,45 @@ class VideoSystemController {
                 this.handleShowProductInNewWindow
             );
         } catch (error) {
-            this.#VideoSystemView.showProduct(null, 'No existe este producto en la página.');
+            this.#VideoSystemView.showProductInNewWindow(null, 'No existe este producto en la página.');
         }
       
     }
 
     handleShowProductInNewWindow = (serial) => {
         try {
-            let product = this.#Videosystem.getProduct(Number.parseInt(serial));
-            this.#VideoSystemView.showProductInNewWindow(product);
+            console.log(serial);
+            let produccion;
+            let tipo;
+                for (let prod of this.#Videosystem.productions) {
+                    console.log(prod.Title);
+                     /* console.log(ref); */
+                    if (prod.Title == serial) {
+                        produccion = prod;
+tipo="produccion";
+                    }
+                }
+                for (let prod of this.#Videosystem.actors) {
+                    console.log(prod.Name);
+                     /* console.log(ref); */
+                    if (prod.Name == serial) {
+                        produccion = prod;
+                        tipo="persona";
+                    }
+                }
+                for (let prod of this.#Videosystem.directors) {
+                    console.log(prod.Name);
+                     /* console.log(ref); */
+                    if (prod.Name == serial) {
+                        produccion = prod;
+                        tipo="persona";
+                    }
+                }
+                console.log(produccion)
+            
+           
+            //let product = this.#Videosystem.getProduct(Number.parseInt(serial));
+            this.#VideoSystemView.showProductInNewWindow(produccion,null,tipo,this.#Videosystem);
         } catch (error) {
             this.#VideoSystemView.showProductInNewWindow(null, 'No existe este producto en la página.');
         }

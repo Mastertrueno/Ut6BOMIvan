@@ -10,21 +10,19 @@ const historyActions = {
         VideoSystemApp.handleInit();
     },
 
-       ActorListInMenu: () => VideoSystemApp.handleActorList(),
-       bindDirectorListInMenu: (event) => VideoSystemApp.handleDirectorList(event.state.category),
+
        bindProductsCategoryList: (event) => VideoSystemApp.handleProductionsCategoryList(event.state.category),
 
-       bindProducts: (event) => VideoSystemApp.handleProduction(event.state.category),
-       bindProductsList: (event) => VideoSystemApp.handleAletProductionList(event.state.category),
+       bindProducts: (event) => VideoSystemApp.handleProduction(event.state.product),
+       bindProductsList: (event) => VideoSystemApp.handleAletProductionList(event.state.product),
        bindInit: (event) => VideoSystemApp.handleInit(event.state.category),
-       bindProductsTypeList: (event) => VideoSystemApp.handleProductionsTypeList(event.state.category),
-       bindProductsCategoryListInMenu: (event) => VideoSystemApp.handleProductionsCategoryList(event.state.category),
-       bindActors: (event) => VideoSystemApp.handleActor(event.state.category),
-       bindProductsPerson: (event) => VideoSystemApp.handleProductionPerson(event.state.category),
-       bindActorsProd: (event) => VideoSystemApp.handleActorProd(event.state.category),
-       bindActorsProd: (event) => VideoSystemApp.handleShowProduct(event.state.category),
-       bindDirectors: (event) => VideoSystemApp.handleDirector(event.state.category),
-       bindShowProduct: (event) => VideoSystemApp.handleShowProduct(event.state.type) 
+       bindProductsTypeList: (event) => VideoSystemApp.handleProductionsTypeList(event.state.type),
+       bindActors: (event) => VideoSystemApp.handleActor(event.state.actor),
+       bindProductsPerson: (event) => VideoSystemApp.handleProductionPerson(event.state.product),
+       bindActorsProd: (event) => VideoSystemApp.handleActorProd(event.state.actor),
+       bindActorsProd: (event) => VideoSystemApp.handleShowProduct(event.state.actor),
+       bindDirectors: (event) => VideoSystemApp.handleDirector(event.state.director),
+       bindShowProduct: (event) => VideoSystemApp.handleShowProduct(event.state.type),
 
 
 }
