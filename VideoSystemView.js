@@ -4,6 +4,7 @@ class VideoSystemgerView {
 		this.categories = $('#categories');
 		this.menu = $('.navbar-nav');
 		this.Videosystem = null;
+		this.windows=[];
 	}
 	#excecuteHandler(handler, handlerArguments, scrollElement, data, url, event) {
 		handler(...handlerArguments);
@@ -141,6 +142,27 @@ class VideoSystemgerView {
 			</li>`);
 		this.menu.append(li);
 	}
+	//boton de cerrar la ventana
+	closeWindowbutton() {
+		let li = $(`<li class="nav-item ">
+		<button class="btn btn-danger m-1" id="closewindow">Cerrar Ventana </button>
+			</li>`);
+		this.menu.append(li);
+	}
+	//bind que cierra la ventana
+	bindCloseWindow(handler) {
+		$('#closewindow').click((event) => {
+			console.log($('#closewindow'));
+console.log(this.windows);
+			console.log(event);
+			for (let index = 0; index < this.windows.length; index++) {
+				this.windows[index].closed;
+				this.windows.pop(index);
+			}
+		});
+	}
+	
+
 	/* 	showDirectorsInMenu(directors) {//hace una lista en el menu
 			let li = $(`<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navDirector" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -295,7 +317,6 @@ class VideoSystemgerView {
 		}
 
 		//product = production.next();
-		container.children().children().children().last().append(`<h4><a data-window ="${actor.Name} ${actor.Lastname1} ${actor.Lastname2}" class="windown nav-link" href="#" role="button"  aria-haspopup="true" aria-expanded="false">Abrir en ventana</a></h4>`);
 		container.prepend(`<h1>${actor.Name} ${actor.Lastname1} ${actor.Lastname2}</h1>`);
 		this.main.append(container);
 	}
@@ -333,7 +354,6 @@ class VideoSystemgerView {
 		//product = production.next();
 
 		container.prepend(`<h1>${director.Name} ${director.Lastname1} ${director.Lastname2}</h1>`);
-		container.children().children().children().last().append(`<h4><a class="windown nav-link" data-window ="${director.Name} ${director.Lastname1} ${director.Lastname2}" href="#" role="button"  aria-haspopup="true" aria-expanded="false">Abrir en ventana</a></h4>`);
 		this.main.append(container);
 	}
 	showDirectors(directors, Videosystem) {
@@ -365,14 +385,14 @@ class VideoSystemgerView {
 		container.prepend(`<h1>Directores</h1>`);
 		this.main.append(container);
 	}
-/* 	bindInit(handler) {
-		$('#init').click((event) => {
-			handler();
-		});
-		$('#logo').click((event) => {
-			handler();
-		});
-	} */
+	/* 	bindInit(handler) {
+			$('#init').click((event) => {
+				handler();
+			});
+			$('#logo').click((event) => {
+				handler();
+			});
+		} */
 	bindProductsCategoryListInMenu(handler) {
 		console.log(handler);
 		$('#navCats').next().children().click((event) => {
@@ -444,7 +464,7 @@ class VideoSystemgerView {
 		});
 		//console.log(this.#excecuteHandler);
 	}
-	bindWindows(handler) {
+	/* bindWindows(handler) {
 		console.log(handler);
 		console.log($('h4').find("a"));
 		$('h4').find('a').click((event) => {
@@ -466,7 +486,7 @@ class VideoSystemgerView {
 			}
 		});
 		//console.log(this.#excecuteHandler);
-	}
+	} */
 	bindActorsProd(handler) {
 		console.log(handler);
 		console.log($('actor-wrap'));
@@ -509,7 +529,7 @@ class VideoSystemgerView {
 			this.#excecuteHandler(
 				handler, [prod],
 				'main',
-				{ action: 'actor', actor: prod },
+				{ action: 'product', product: prod },
 				'#actor', event
 			);
 		});
@@ -572,7 +592,7 @@ class VideoSystemgerView {
 
 		});
 	} */
-	bindShowProduct(handler) {
+	/* bindShowProduct(handler) {
 		//console.log($('#product-list').children());
 		$('#product-list').click((event) => {
 			//console.log("aqui");
@@ -592,7 +612,7 @@ class VideoSystemgerView {
 				'#category-list', event
 			);
 		});
-	}
+	} */
 	bindProductsTypeList(handler) {
 		$('#type-list').find('a').click((event) => {
 			let type = $(event.target).closest($('a')).get(0).dataset.type;
@@ -604,7 +624,7 @@ class VideoSystemgerView {
 			);
 		});
 	}
-	showProductInNewWindow(product, message,tipo,Videosystem) {
+	showProductInNewWindow(product, message, tipo, Videosystem) {
 		let main = $(this.Videosystem.document).find('main');
 		console.log(main);
 		let header = $(this.Videosystem.document).find('header nav');
@@ -615,7 +635,7 @@ class VideoSystemgerView {
 		let container;
 		if (product) {
 			console.log("entra en el window")
-			if (tipo=="persona") {
+			if (tipo == "persona") {
 				console.log("es persona")
 				this.Videosystem.document.title = `${product.Name}`;
 				header.append(`<h1 data-serial="${product.Name}" class="display-5">${product.Name} ${product.Lastname1} ${product.Lastname2}</h1>`);
@@ -670,8 +690,8 @@ class VideoSystemgerView {
 			</div> 
 				 </div> 
 				 <button class="btn btn-primary text-uppercase m-2 px-4" onClick="window.close()">Cerrar</button>`);
-				 console.log(container);
-				 for (let actor of Videosystem.getCast(product)) {
+				console.log(container);
+				for (let actor of Videosystem.getCast(product)) {
 					/* console.log(actor);
 					console.log(actor.Name); */
 					container.children().children().children().last().append(`<div class="actor-wrap"> <h5><a href="#${actor.Name}${actor.Lastname1}" data-actor="${actor.Name} ${actor.Lastname1} ${actor.Lastname2}" class="actor h5">${actor.Name} ${actor.Lastname1} ${actor.Lastname2}</a></h5>  </div>`);
@@ -695,6 +715,8 @@ class VideoSystemgerView {
 			console.log(event.target);
 			if (!this.Videosystem || this.Videosystem.closed) {
 				this.Videosystem = window.open("auxpage.html", "productWindow", "width=800, height=600, top=250, left=250, titlebar=yes, toolbar=no, menubar=no, location=no");
+				this.windows.push(this.Videosystem);
+
 				this.Videosystem.addEventListener('DOMContentLoaded', () => {
 					console.log(event.target.dataset.window);
 					handler(event.target.dataset.window)
